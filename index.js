@@ -11,9 +11,21 @@ const setup = () => {
 const detect = async (e) => {
   const barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] });
 
-  const barcodes = await barcodeDetector.detect(e.files[0]);
+  const file = e.target.files[0];
+
+  if (file === undefined) {
+    return;
+  }
+
+  const barcodes = await barcodeDetector.detect(await createImageBitmap(file));
 
   const values = barcodes.map((barcode) => barcode.rawValue);
+
+  if (values.length === 0) {
+    alert('No barcodes found.');
+
+    return;
+  }
 
   alert(values.join('\n'));
 }
